@@ -1,6 +1,15 @@
+const testUrl = 'http://localhost:4000';
+
+// Константы для селекторов
+const modalIngredientSelector = '[data-cy="modal_ingredient"]';
+const bun0Selector = '[data-cy="bun_0"]';
+const ingredientModalSelector = '[data-cy="ingredient_modal"] > .text_type_main-medium';
+const modalOverlaySelector = '[data-cy="modal_overlay"]';
+const btnCloseModalSelector = '[data-cy="btn_close_modal"]';
+
 describe('Проверяем доступность приложения', () => {
   it('сервис должен быть доступен по адресу localhost:4000', () => {
-    cy.visit('http://localhost:4000');
+    cy.visit(testUrl);
   });
 });
 
@@ -16,7 +25,7 @@ beforeEach(() => {
     fixture: 'user'
   }).as('getUser');
 
-  cy.visit('localhost:4000');
+  cy.visit(testUrl);
   cy.wait('@getIngredients');
   cy.wait('@getUser');
 });
@@ -32,8 +41,8 @@ describe('Проверка работоспособности страницы -
     cy.get('[data-cy="bun_constructor_item_down_clear"]').should('exist');
     cy.get('[data-cy="ingredient_constructor_item"]').should('not.exist');
 
-    cy.get('[data-cy="bun_0"]').should('exist');
-    cy.get('[data-cy="bun_0"] > .common_button').should('exist').click();
+    cy.get(bun0Selector).should('exist');
+    cy.get(`${bun0Selector} > .common_button`).should('exist').click();
 
     cy.get('[data-cy="ingredient_0"]').should('exist');
     cy.get(':nth-child(4) > [data-cy="ingredient_0"] > .common_button')
@@ -47,31 +56,25 @@ describe('Проверка работоспособности страницы -
   it('Проверка открытия и закрытия модального окна одного ингредиента - через оверлей', () => {
     const ingredientName = 'Краторная булка N-200i';
 
-    cy.get('[data-cy="modal_ingredient"]').should('not.exist');
-    cy.get('[data-cy="bun_0"]').should('exist').click();
-    cy.get('[data-cy="modal_ingredient"]').should('be.visible');
-    cy.get('[data-cy="ingredient_modal"] > .text_type_main-medium').should(
-      'contain.text',
-      ingredientName
-    );
-    cy.get('[data-cy="modal_overlay"]').should('exist');
-    cy.get('[data-cy="modal_overlay"]').click({ force: true });
-    cy.get('[data-cy="modal_ingredient"]').should('not.exist');
-    cy.get('[data-cy="modal_overlay"]').should('not.exist');
+    cy.get(modalIngredientSelector).should('not.exist');
+    cy.get(bun0Selector).should('exist').click();
+    cy.get(modalIngredientSelector).should('be.visible');
+    cy.get(ingredientModalSelector).should('contain.text', ingredientName);
+    cy.get(modalOverlaySelector).should('exist');
+    cy.get(modalOverlaySelector).click({ force: true });
+    cy.get(modalIngredientSelector).should('not.exist');
+    cy.get(modalOverlaySelector).should('not.exist');
   });
 
   it('Проверка открытия и закрытия модального окна одного ингредиента - через кнопку закрытия', () => {
     const ingredientName = 'Краторная булка N-200i';
 
-    cy.get('[data-cy="modal_ingredient"]').should('not.exist');
-    cy.get('[data-cy="bun_0"]').should('exist').click();
-    cy.get('[data-cy="modal_ingredient"]').should('be.visible');
-    cy.get('[data-cy="ingredient_modal"] > .text_type_main-medium').should(
-      'contain.text',
-      ingredientName
-    );
-    cy.get('[data-cy="btn_close_modal"]').click();
-    cy.get('[data-cy="modal_ingredient"]').should('not.exist');
+    cy.get(modalIngredientSelector).should('not.exist');
+    cy.get(bun0Selector).should('exist').click();
+    cy.get(modalIngredientSelector).should('be.visible');
+    cy.get(ingredientModalSelector).should('contain.text', ingredientName);
+    cy.get(btnCloseModalSelector).click();
+    cy.get(modalIngredientSelector).should('not.exist');
   });
 
   it('Проверка полного цикла заказа товара', () => {
@@ -79,8 +82,8 @@ describe('Проверка работоспособности страницы -
     cy.get('[data-cy="bun_constructor_item_down_clear"]').should('exist');
     cy.get('[data-cy="ingredient_constructor_item"]').should('not.exist');
 
-    cy.get('[data-cy="bun_0"]').should('exist');
-    cy.get('[data-cy="bun_0"] > .common_button').should('exist').click();
+    cy.get(bun0Selector).should('exist');
+    cy.get(`${bun0Selector} > .common_button`).should('exist').click();
     cy.get('[data-cy="ingredient_0"]').should('exist');
     cy.get(':nth-child(4) > [data-cy="ingredient_0"] > .common_button')
       .should('exist')
@@ -101,6 +104,6 @@ describe('Проверка работоспособности страницы -
     cy.get('[data-cy="bun_constructor_item_up_clear"]').should('exist');
     cy.get('[data-cy="bun_constructor_item_down_clear"]').should('exist');
     cy.get('[data-cy="ingredient_constructor_item"]').should('not.exist');
-    cy.get('[data-cy="btn_close_modal"]').should('exist').click();
+    cy.get(btnCloseModalSelector).should('exist').click();
   });
 });
